@@ -17,7 +17,7 @@ MEAS_DTYPE = Float32 #alias for type
 
 reading_type_arr::Vector{String} = ["linX", "linY", "linZ", "gyrX", "gyrY", "gyrZ", "magX", "magY", "magZ", "lin_time", "gyr_time", "mag_time"]
 
-function readData(channel::Channel, channel2::Channel, url::String="http://192.168.17.35:8080/get?linX&linY&linZ&gyrX&gyrY&gyrZ&magX&magY&magZ&lin_time&gyr_time&mag_time", MEAS_DTYPE=MEAS_DTYPE)
+function readData(channel::Channel, channel2::Channel, url::String="http://100.76.199.193:8080/get?linX&linY&linZ&gyrX&gyrY&gyrZ&magX&magY&magZ&lin_time&gyr_time&mag_time", MEAS_DTYPE=MEAS_DTYPE)
     no_data_received_count = 0
     while true
         try
