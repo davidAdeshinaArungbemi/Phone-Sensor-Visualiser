@@ -20,11 +20,15 @@ reading_type_arr::Vector{String} = ["linX", "linY", "linZ", "gyrX", "gyrY", "gyr
 function readData(channel::Channel, channel2::Channel, url::String="http://192.168.17.35:8080/get?linX&linY&linZ&gyrX&gyrY&gyrZ&magX&magY&magZ&lin_time&gyr_time&mag_time", MEAS_DTYPE=MEAS_DTYPE)
     no_data_received_count = 0
     while true
+        try
+            response = HTTP.get(url, headers=["Accept" => "application/json", "Content-Type" => "application/json"]) # Make an HTTP GET request to the URL
+        catch
+        end
         # println("$(Crayon(foreground=:yellow))Channel is empty: $(Crayon(foreground=:green))$(isempty(channel2))")
         if !isempty(channel2)
             try
                 #check if url is online
-                response = HTTP.get(url, headers=["Accept" => "application/json", "Content-Type" => "application/json"]) # Make an HTTP GET request to the URL
+                # response = HTTP.get(url, headers=["Accept" => "application/json", "Content-Type" => "application/json"]) # Make an HTTP GET request to the URL
                 if HTTP.status(response) == 200 # Check if the request was successful (status code 200)
                     # println("$(Crayon(foreground=:green))HTTP Resquest successful")
 

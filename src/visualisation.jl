@@ -195,7 +195,7 @@ try
         end
 
         ImPlot.FitNextPlotAxes()
-        if ImPlot.BeginPlot("Magnetic field(uT)", "x1", "uT")
+        if ImPlot.BeginPlot("Magnetic field(uT)", "samples", "uT")
             if !isempty(accX_values) && !isempty(magY_values) && !isempty(magZ_values)
                 ImPlot.SetNextLineStyle(ImVec4(color1, 0, 0, 1))
                 ImPlot.PlotLine(magX_values, label_id="magX")
