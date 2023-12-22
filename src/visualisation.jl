@@ -76,7 +76,8 @@ function createPlot(imuChannel::Channel, urlChannel::Channel, measurement_dtype:
     MAGY_VALUES::Vector{measurement_dtype} = []
     MAGZ_VALUES::Vector{measurement_dtype} = []
 
-    url_buffer::String = "http://192.168.17.35:8080/get?linX&linY&linZ&gyrX&gyrY&gyrZ&magX&magY&magZ&lin_time&gyr_time&mag_time"
+    #place url here
+    url_buffer::String = "http://000.000.000.000:8080/get?linX&linY&linZ&gyrX&gyrY&gyrZ&magX&magY&magZ&lin_time&gyr_time&mag_time"
     URLBUFFERSIZE = length(url_buffer) + 10
     put!(urlChannel, url_buffer)
 
