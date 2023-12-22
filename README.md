@@ -1,4 +1,3 @@
-<img width="1440" alt="Screenshot 2023-12-22 at 12 59 42" src="https://github.com/davidAdeshinaArungbemi/Phone-Sensor-Visualiser/assets/105245707/e9ea9fa0-a3b3-4496-a540-74a14da54f85">
 # Creating a Cool Tool to Visualise gyroscope, accelerometer and magnetometer in Julia
 So, picture this: You've got this nifty app, Phyphox, letting you record sensor data on your phone - magnetometers, accelerometers, the whole deal. But here's the twist, I wanted more. I craved real-time access to that data, something Phyphox wasn't offering. And, oh, did I mention my love for Julia and the awesome dear ImGui?
 
