@@ -27,6 +27,8 @@ So, here you have it - a little something that showcases my knack for innovation
 <img width="1440" alt="phyphox" src="https://github.com/davidAdeshinaArungbemi/Phone-Sensor-Visualiser/assets/105245707/a713f126-9004-44ac-af12-ef60c249a551">
 
 ### Julia Dear Imgui Visualiser
+https://github.com/davidAdeshinaArungbemi/Phone-Sensor-Visualiser/assets/105245707/09c5f02b-7cbd-435d-905f-ba89d7fb7c33
+
 
 
 
