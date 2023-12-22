@@ -3,23 +3,13 @@ using HTTP
 using JSON
 using Crayons
 reading_type_arr::Vector{String} = ["linX", "linY", "linZ", "gyrX", "gyrY", "gyrZ", "magX", "magY", "magZ", "lin_time", "gyr_time", "mag_time"]
-url = ""
-function readData(imuChannel::Channel, urlChannel::Channel, measurement_dtype::DataType)
-    # #preloading
-    # try
-    #     url = if isready(urlChannel)
-    #         take!(urlChannel)
-    #     else
-    #         nothing
-    #     end
-    #     response = HTTP.get(url, headers=["Accept" => "application/json", "Content-Type" => "application/json"])
-    # catch e
-    # end
 
+function readData(imuChannel::Channel, urlChannel::Channel, measurement_dtype::DataType)
+    url = ""
     while true
         try
             if isready(urlChannel)
-                global url = take!(urlChannel)
+                url = take!(urlChannel)
             end
 
             response = HTTP.get(url, headers=["Accept" => "application/json", "Content-Type" => "application/json"])
@@ -30,7 +20,6 @@ function readData(imuChannel::Channel, urlChannel::Channel, measurement_dtype::D
                 if data["status"]["measuring"] == false && data["status"]["countDown"] > 0
                     countdown::Float32 = data["status"]["countDown"] / 1000 #secs
                     println(Crayon(foreground=:yellow), "Countdown of $countdown sec")
-                    # sleep(countdown + 0.005)
 
                 elseif data["status"]["measuring"] == false
                     println("$(Crayon(foreground=:yellow))No data received")

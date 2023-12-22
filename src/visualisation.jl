@@ -52,24 +52,33 @@ ImGuiOpenGLBackend.init(gl_ctx)
 
 clear_color = Cfloat[0, 0, 0, 1.00]
 
+function fillIMUArray(imuData)
+    for data in imuData
+        for val in data
+
+        end
+    end
+end
 
 function createPlot(imuChannel::Channel, urlChannel::Channel, measurement_dtype::DataType)
-    global accX_values = measurement_dtype[]
-    global accY_values = measurement_dtype[]
-    global accZ_values = measurement_dtype[]
 
-    global gyrX_values = measurement_dtype[]
-    global gyrY_values = measurement_dtype[]
-    global gyrZ_values = measurement_dtype[]
+    data_size = 10000
 
-    global magX_values = measurement_dtype[]
-    global magY_values = measurement_dtype[]
-    global magZ_values = measurement_dtype[]
+    ACCX_VALUES::Vector{measurement_dtype} = []
+    ACCY_VALUES::Vector{measurement_dtype} = []
+    ACCZ_VALUES::Vector{measurement_dtype} = []
+
+    GYRX_VALUES::Vector{measurement_dtype} = []
+    GYRY_VALUES::Vector{measurement_dtype} = []
+    GYRZ_VALUES::Vector{measurement_dtype} = []
+
+    MAGX_VALUES::Vector{measurement_dtype} = []
+    MAGY_VALUES::Vector{measurement_dtype} = []
+    MAGZ_VALUES::Vector{measurement_dtype} = []
 
     url_buffer::String = "http://192.168.17.35:8080/get?linX&linY&linZ&gyrX&gyrY&gyrZ&magX&magY&magZ&lin_time&gyr_time&mag_time"
+    URLBUFFERSIZE = length(url_buffer) + 10
     put!(urlChannel, url_buffer)
-
-    # sleep(0.01)
 
     try
         while glfwWindowShouldClose(window) == 0
@@ -84,103 +93,106 @@ function createPlot(imuChannel::Channel, urlChannel::Channel, measurement_dtype:
 
             CImGui.SetNextWindowPos((0, 0))
 
-            CImGui.Begin("Data Visualiser", C_NULL)
+            CImGui.Begin("Control", C_NULL)
             CImGui.SetWindowSize(ImVec2(CImGui.GetWindowSize().x, height[]), CImGui.ImGuiCond_Always)
-
-            CImGui.PushStyleVar(CImGui.ImGuiStyleVar_FrameRounding, 5.0)
-            if CImGui.Button("Record")
-                if isready(urlChannel) #clear channel if filled
-                    take!(urlChannel)
-                end
-                put!(urlChannel, url_buffer)
-            end
-            CImGui.PopStyleVar()
-
-            CImGui.SameLine()
-
-            CImGui.PushStyleVar(CImGui.ImGuiStyleVar_FrameRounding, 5.0)
-
-            if CImGui.Button("Reset")
-                global accX_values = measurement_dtype[]
-                global accY_values = measurement_dtype[]
-                global accZ_values = measurement_dtype[]
-
-                global gyrX_values = measurement_dtype[]
-                global gyrY_values = measurement_dtype[]
-                global gyrZ_values = measurement_dtype[]
-
-                global magX_values = measurement_dtype[]
-                global magY_values = measurement_dtype[]
-                global magZ_values = measurement_dtype[]
-            end
-
-            CImGui.PopStyleVar()
-
-            CImGui.SameLine()
-
-            if CImGui.InputText("URL", url_buffer, length(url_buffer) + 10) #update url buffer
-            end
-
-            CImGui.Separator()
+            CImGui.BeginTabBar("Tabs")
 
             try
                 if isready(imuChannel)
                     state = take!(imuChannel)
-                    push!(accX_values, state[1])
-                    push!(accY_values, state[2])
-                    push!(accZ_values, state[3])
+                    push!(ACCX_VALUES, state[1])
+                    push!(ACCY_VALUES, state[2])
+                    push!(ACCZ_VALUES, state[3])
 
-                    push!(gyrX_values, state[4])
-                    push!(gyrY_values, state[5])
-                    push!(gyrZ_values, state[6])
+                    push!(GYRX_VALUES, state[4])
+                    push!(GYRY_VALUES, state[5])
+                    push!(GYRZ_VALUES, state[6])
 
-                    push!(magX_values, state[7])
-                    push!(magY_values, state[8])
-                    push!(magZ_values, state[9])
+                    push!(MAGX_VALUES, state[7])
+                    push!(MAGY_VALUES, state[8])
+                    push!(MAGZ_VALUES, state[9])
                 end
             catch e
                 println("$(Crayon(foreground=:red))Error: $(Crayon(foreground=:white))$e")
             end
 
-            ImPlot.FitNextPlotAxes()
-            if ImPlot.BeginPlot("Linear Acceleration(m/s^2)", "samples", "m/s^2")
-                if !isempty(accX_values)
-                    ImPlot.SetNextLineStyle(ImVec4(1, 0, 0, 1))
-                    ImPlot.PlotLine(accX_values, label_id="accX")
-                    ImPlot.SetNextLineStyle(ImVec4(0, 1, 0, 1))
-                    ImPlot.PlotLine(accY_values, label_id="accY")
-                    ImPlot.SetNextLineStyle(ImVec4(0, 0, 1, 1))
-                    ImPlot.PlotLine(accZ_values, label_id="accZ")
+            if CImGui.BeginTabItem("Plots")
+                if isready(urlChannel) #clear channel if filled
+                    take!(urlChannel)
                 end
-                ImPlot.EndPlot()
+                put!(urlChannel, url_buffer)
+
+                CImGui.PushStyleVar(CImGui.ImGuiStyleVar_FrameRounding, 5.0)
+
+                if CImGui.Button("Clear Data")
+                    empty!(ACCX_VALUES)
+                    empty!(ACCY_VALUES)
+                    empty!(ACCZ_VALUES)
+
+                    empty!(GYRX_VALUES)
+                    empty!(GYRY_VALUES)
+                    empty!(GYRZ_VALUES)
+
+                    empty!(MAGX_VALUES)
+                    empty!(MAGY_VALUES)
+                    empty!(MAGZ_VALUES)
+                end
+
+                CImGui.PopStyleVar()
+
+                CImGui.SameLine()
+
+                if CImGui.InputText("URL", url_buffer, URLBUFFERSIZE) #update url buffer
+                end
+
+                CImGui.Separator()
+
+                ImPlot.FitNextPlotAxes()
+                if ImPlot.BeginPlot("Linear Acceleration(m/s^2)", "samples", "m/s^2")
+                    if !isempty(ACCX_VALUES)
+                        ImPlot.SetNextLineStyle(ImVec4(1, 0, 0, 1))
+                        ImPlot.PlotLine(ACCX_VALUES, label_id="accX")
+                        ImPlot.SetNextLineStyle(ImVec4(0, 1, 0, 1))
+                        ImPlot.PlotLine(ACCY_VALUES, label_id="accY")
+                        ImPlot.SetNextLineStyle(ImVec4(0, 0, 1, 1))
+                        ImPlot.PlotLine(ACCZ_VALUES, label_id="accZ")
+                    end
+                    ImPlot.EndPlot()
+                end
+
+                ImPlot.FitNextPlotAxes()
+                if ImPlot.BeginPlot("Gyroscope(rad/s)", "samples", "rad/s")
+                    if !isempty(GYRX_VALUES)
+                        ImPlot.SetNextLineStyle(ImVec4(1, 0, 0, 1))
+                        ImPlot.PlotLine(GYRX_VALUES, label_id="gyrX")
+                        ImPlot.SetNextLineStyle(ImVec4(0, 1, 0, 1))
+                        ImPlot.PlotLine(GYRY_VALUES, label_id="gyrY")
+                        ImPlot.SetNextLineStyle(ImVec4(0, 0, 1, 1))
+                        ImPlot.PlotLine(GYRZ_VALUES, label_id="gyrZ")
+                    end
+                    ImPlot.EndPlot()
+                end
+
+                ImPlot.FitNextPlotAxes()
+                if ImPlot.BeginPlot("Magnetic field(uT)", "samples", "uT")
+                    if !isempty(MAGX_VALUES)
+                        ImPlot.SetNextLineStyle(ImVec4(1, 0, 0, 1))
+                        ImPlot.PlotLine(MAGX_VALUES, label_id="magX")
+                        ImPlot.SetNextLineStyle(ImVec4(0, 1, 0, 1))
+                        ImPlot.PlotLine(MAGY_VALUES, label_id="magY")
+                        ImPlot.SetNextLineStyle(ImVec4(0, 0, 1, 1))
+                        ImPlot.PlotLine(MAGZ_VALUES, label_id="magZ")
+                    end
+                    ImPlot.EndPlot()
+                end
+                CImGui.EndTabItem()
             end
 
-            ImPlot.FitNextPlotAxes()
-            if ImPlot.BeginPlot("Gyroscope(rad/s)", "samples", "rad/s")
-                if !isempty(gyrX_values)
-                    ImPlot.SetNextLineStyle(ImVec4(1, 0, 0, 1))
-                    ImPlot.PlotLine(gyrX_values, label_id="gyrX")
-                    ImPlot.SetNextLineStyle(ImVec4(0, 1, 0, 1))
-                    ImPlot.PlotLine(gyrY_values, label_id="gyrY")
-                    ImPlot.SetNextLineStyle(ImVec4(0, 0, 1, 1))
-                    ImPlot.PlotLine(gyrZ_values, label_id="gyrZ")
-                end
-                ImPlot.EndPlot()
+            if CImGui.BeginTabItem("Logs")
+                CImGui.EndTabItem()
             end
 
-            ImPlot.FitNextPlotAxes()
-            if ImPlot.BeginPlot("Magnetic field(uT)", "samples", "uT")
-                if !isempty(magX_values)
-                    ImPlot.SetNextLineStyle(ImVec4(1, 0, 0, 1))
-                    ImPlot.PlotLine(magX_values, label_id="magX")
-                    ImPlot.SetNextLineStyle(ImVec4(0, 1, 0, 1))
-                    ImPlot.PlotLine(magY_values, label_id="magY")
-                    ImPlot.SetNextLineStyle(ImVec4(0, 0, 1, 1))
-                    ImPlot.PlotLine(magZ_values, label_id="magZ")
-                end
-                ImPlot.EndPlot()
-            end
-
+            CImGui.EndTabBar()
             CImGui.End()
             # rendering
             CImGui.Render()
