@@ -23,7 +23,7 @@ This project was more than just code; it was about tackling problems head-on, th
 
 So, here you have it - a little something that showcases my knack for innovation, my love forJulia, and my knack for making things not just work, but work awesomely well. Cheers to real-time sensor data fun! 🚀
 
-### PhyPhox Website Visualiser
+### PhyPhox Website Visualiser [https://github.com/phyphox]
 <img width="1440" alt="phyphox" src="https://github.com/davidAdeshinaArungbemi/Phone-Sensor-Visualiser/assets/105245707/a713f126-9004-44ac-af12-ef60c249a551">
 
 ### Julia Dear Imgui Visualiser
