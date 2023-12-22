@@ -1,4 +1,4 @@
-# Creating a Cool Tool to Visualise gyroscope, accelerometer and magnetometer in Julia
+# Creating a Cool Tool to Phone Sensors in Julia
 So, picture this: You've got this nifty app, Phyphox, letting you record sensor data on your phone - magnetometers, accelerometers, the whole deal. But here's the twist, I wanted more. I craved real-time access to that data, something Phyphox wasn't offering. And, oh, did I mention my love for Julia and the awesome dear ImGui?
 
 Cue my journey into the coding adventure! Here's what went down:
